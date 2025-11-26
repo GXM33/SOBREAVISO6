@@ -719,20 +719,19 @@
             contents[index].classList.add('active');
             buttons[index].classList.add('active');
 
-            // Restaurar data em todas as abas
-            if (lastSelectedDate) {
-                document.getElementById('date-select').value = lastSelectedDate;
-                document.getElementById('swap-date-select').value = lastSelectedDate;
+            // Se voltar para aba de Data, mostrar data de hoje
+            if (index === 0) {
+                const todayDate = getTodayBrasilia();
+                document.getElementById('date-select').value = todayDate;
+                if (schedule[todayDate]) {
+                    document.getElementById('output').value = buildMessage(todayDate);
+                }
             }
 
             // Se clicar na aba de Trocas e houver data selecionada, carregar automaticamente
             if (index === 2 && lastSelectedDate) {
+                document.getElementById('swap-date-select').value = lastSelectedDate;
                 loadSwapOptions();
-            }
-
-            // Se voltar para Data ou Trocas, mostrar o texto da última data
-            if ((index === 0 || index === 2) && lastSelectedDate) {
-                document.getElementById('output').value = buildMessage(lastSelectedDate);
             }
 
             // Se clicar em Pessoa, limpar o textarea e esconder resumo de mês
