@@ -515,6 +515,7 @@
     <script>
         let lastSelectedDate = null;
         let currentTab = 0;
+        let isSearchingByPerson = false;
 
         const nameMap = {
             "Cau": "Insp. Acauã",
@@ -688,6 +689,13 @@
             return day + '/' + month + '/' + year;
         }
 
+        function getDayOfWeek(dateString) {
+            const [day, month, year] = dateString.split('/');
+            const date = new Date(year, month - 1, day);
+            const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            return daysOfWeek[date.getDay()];
+        }
+
         function sortDates(dates) {
             return dates.sort((a, b) => {
                 const [diaA, mesA, anoA] = a.split('/');
@@ -761,7 +769,15 @@
             const fone2 = phoneMap[sa02];
             
             let text = "*Sobreaviso DRV/DEIC*\n";
-            text += "Data: " + date + "\n\n";
+            
+            // Se estiver buscando por pessoa, adiciona o dia da semana
+            if (isSearchingByPerson) {
+                const dayOfWeek = getDayOfWeek(date);
+                text += "Data: " + date + " (" + dayOfWeek + ")\n\n";
+            } else {
+                text += "Data: " + date + "\n\n";
+            }
+            
             text += nome1 + "\n" + fone1 + "\n\n";
             text += nome2 + "\n" + fone2 + "\n\n";
             
@@ -781,6 +797,7 @@
         }
 
         function searchByDate() {
+            isSearchingByPerson = false;
             const date = document.getElementById('date-select').value;
             if (!date) return;
             lastSelectedDate = date;
@@ -788,6 +805,7 @@
         }
 
         function searchByPerson() {
+            isSearchingByPerson = true;
             const personFull = document.getElementById('person-select').value;
             const monthFilter = document.getElementById('month-filter').value;
             const summaryDiv = document.getElementById('month-summary');
@@ -852,6 +870,7 @@
         }
 
         function loadSwapOptions() {
+            isSearchingByPerson = false;
             const date = document.getElementById('swap-date-select').value;
             if (!date) {
                 document.getElementById('swap-options-container').style.display = 'none';
@@ -890,6 +909,7 @@
         }
 
         function updateSwapMessage() {
+            isSearchingByPerson = false;
             const date = document.getElementById('swap-date-select').value;
             if (!date) return;
 
